@@ -7,6 +7,7 @@ class BSTDS(ABC):
     l: BSTDS
     r: BSTDS
     x: int
+    sentinel: bool
 
 
 class BSTNode(BSTDS):
@@ -14,11 +15,16 @@ class BSTNode(BSTDS):
         self.left = l
         self.right = r
         self.val = x
+        if x == -1:
+            self.sentinel = True
+        else:
+            self.sentinel = False
 
 
 def BSTInsert(root: BSTNode, x):
     if root.val == -1:
         root.val = x
+        root.sentinel = False
         return
 
     if x > root.val and root.right is None:
@@ -32,20 +38,25 @@ def BSTInsert(root: BSTNode, x):
     # assume all x are unique for now
 
 
-def BSTDelete(self, root, key):
+def BSTDelete(root, key):
     if root is None:
         return None
     # find
-    prev, curr = self.bs(None, root, key)
+    prev, curr = BSTSearch(None, root, key)
     if prev is None and curr is None:  # tree doesnt contain key
         return root
     # delete
-    sucp, suc = self.rmandretsuccessor(curr)  # suc is NULL or (suc.left and suc.right is NULL)
+    sucp, suc = FindSuccessor(curr)  # suc is NULL or (suc.left and suc.right is NULL)
     if prev is None:  # curr is the root
         if suc is None:
-            r = curr.left
-            curr.left = None
-            return r
+            if curr.left:
+                r = curr.left
+                curr.left = None
+                return r
+            else:
+                curr.val = -1
+                curr.sentinel = True
+                return curr
         if curr == sucp:
             suc.left = curr.left
         else:
@@ -112,3 +123,6 @@ def Inorder(root: BSTNode):
     A.append(root.val)
     A.extend(Inorder(root.right))
     return A
+
+def IsEmpty(root):
+    return root.sentinel
