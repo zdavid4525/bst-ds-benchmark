@@ -1,16 +1,6 @@
 from __future__ import annotations
 
-from abc import ABC
-
-
-class BSTDS(ABC):
-    l: BSTDS
-    r: BSTDS
-    x: int
-    sentinel: bool
-
-
-class BSTNode(BSTDS):
+class BSTNode:
     def __init__(self, l=None, r=None, x=-1):
         self.left = l
         self.right = r
@@ -42,7 +32,7 @@ def BSTDelete(root, key):
     if root is None:
         return None
     # find
-    prev, curr = BSTSearch(None, root, key)
+    prev, curr = _BSTSearch(None, root, key)
     if prev is None and curr is None:  # tree doesnt contain key
         return root
     # delete
@@ -82,15 +72,26 @@ def BSTDelete(root, key):
         return root
 
 
-def BSTSearch(par, root, key):
+def _BSTSearch(par, root, key):
     if root is None:
         return None, None
     if root.val == key:
         return par, root
     elif root.val < key:
-        return BSTSearch(root, root.right, key)
+        return _BSTSearch(root, root.right, key)
     else:  # root.val > key
-        return BSTSearch(root, root.left, key)
+        return _BSTSearch(root, root.left, key)
+
+
+def BSTSearch(root, key):
+    if root is None:
+        return None
+    if root.val == key:
+        return root
+    elif root.val < key:
+        return BSTSearch(root.right, key)
+    else:  # root.val > key
+        return BSTSearch(root.left, key)
 
 
 def FindSuccessor(root):
